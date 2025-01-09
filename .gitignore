@@ -1,0 +1,13 @@
+# Build artifacts
+/build
+*.o
+*.so
+*.dll
+ixxler
+
+# Temporary files
+*.log
+*.tmp
+
+# Debugger
+gdb_history
