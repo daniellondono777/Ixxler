@@ -1,7 +1,7 @@
 # Compiler and Flags
 CC = gcc
-CFLAGS = -Wall -Wextra -O2
-LDFLAGS = -lcurl # Link against libcurl for downloader
+CFLAGS = -Wall -Wextra -O2 -Iinclude
+LDFLAGS = -lcurl
 
 # Directories
 SRCDIR = src
@@ -24,7 +24,7 @@ $(TARGET): $(OBJS)
 # Compile Each Source File into Object Files
 $(BUILDDIR)/%.o: $(SRCDIR)/%.c
 	@mkdir -p $(BUILDDIR)
-	$(CC) $(CFLAGS) -I$(INCDIR) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 # Clean the Build Directory
 clean:

