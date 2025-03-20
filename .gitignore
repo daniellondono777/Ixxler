@@ -1,13 +1,8 @@
 # Build artifacts
-/build
-*.o
-*.so
+/build/
+*.exe
 *.dll
-ixxler
 
 # Temporary files
 *.log
 *.tmp
-
-# Debugger
-gdb_history
